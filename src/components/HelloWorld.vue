@@ -15,7 +15,26 @@
           @keyup.enter="searchRepo"
         />
         <ul class="list-group">
-          <li class="list-group-item">Something</li>
+          <li v-for="repo in searchResults" class="list-group-item">
+            {{ repo.full_name }} ({{ repo.stargazers_count }})
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              @click="remove(repo)"
+              v-if="reposToCompare.map(repo => repo.id).includes(repo.id)"
+            >
+              Remove
+            </button>
+            <button
+              v-else
+              type="button"
+              name="button"
+              class="btn btn-sm btn-outline-success"
+              @click="addToCompare(repo)"
+            >
+              Add to compare
+            </button>
+          </li>
         </ul>
       </div>
       <!-- Results -->
@@ -30,7 +49,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr></tr>
+            <tr v-for="repos in reposToCompare" :key="repos.id">
+              <td>{{ repos.name }}</td>
+              <td>{{ repos.stargazers_count }}</td>
+              <td>{{ repos.watchers_count }}</td>
+              <td>{{ repos.forks_count }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -49,7 +73,8 @@ export default {
       form: {
         reponame: ""
       },
-      searchResults = [];
+      searchResults: [],
+      reposToCompare: []
     };
   },
   methods: {
@@ -58,9 +83,15 @@ export default {
       apiUrl = apiUrl + this.form.reponame;
       fetch(apiUrl)
         .then(response => response.json())
-        .then(data => (
-          this.searchResults = data.items;
-        ));
+        .then(data => (this.searchResults = data.items));
+    },
+    addToCompare(repo) {
+      this.reposToCompare.push(repo);
+    },
+    remove(repo) {
+      const indexOfRepo = this.reposToCompare.indexOf(repo);
+
+      this.reposToCompare.splice(indexOfRepo, 1);
     }
   }
 };
