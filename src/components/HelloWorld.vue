@@ -50,7 +50,7 @@
           </thead>
           <tbody>
             <tr v-for="repos in reposToCompare" :key="repos.id">
-              <td>{{ repos.name }}</td>
+              <td>{{ repos.full_name }}</td>
               <td>{{ repos.stargazers_count }}</td>
               <td>{{ repos.watchers_count }}</td>
               <td>{{ repos.forks_count }}</td>
